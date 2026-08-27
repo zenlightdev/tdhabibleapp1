@@ -74,7 +74,7 @@ header .title p{margin:3px auto 0;font-size:11px;color:var(--muted);
 header .title p:active{background:rgba(0,0,0,.12)}
 .stat-line span{cursor:pointer;padding:3px 6px;border-radius:8px}
 .stat-line span:active{background:rgba(0,0,0,.08)}
-.icon-btn{font-size:20px;width:40px;height:36px;border-radius:10px;display:grid;place-items:center}
+.icon-btn{font-size:20px;width:36px;height:36px;border-radius:10px;display:grid;place-items:center}
 .icon-btn:active{background:rgba(0,0,0,.07)}
 /* ============ STATS ============ */
 #stats{
@@ -82,8 +82,13 @@ header .title p:active{background:rgba(0,0,0,.12)}
   font-size:11px;color:var(--muted);padding:5px 10px;background:var(--chrome);
   border-bottom:1px solid var(--line);z-index:29;min-height:34px;
 }
-#stats .stat-line{grid-column:2;display:flex;gap:13px;justify-content:center;white-space:nowrap}
+#stats .stat-line{grid-column:2;display:flex;gap:13px;justify-content:center;white-space:nowrap;min-width:0}
+#stats em{font-style:normal}
 #stats b{color:var(--ink);font-weight:600}
+#stats.compact .stat-line{gap:8px;font-size:10.5px}
+#stats.compact em{display:none}
+#stats.compact #rulerQuick button{min-width:34px;height:26px}
+#stats.compact #rulerQuick .ik{width:16px;height:16px}
 #rulerQuick{grid-column:3;justify-self:end;display:none;gap:3px;background:rgba(0,0,0,.08);border-radius:11px;padding:2px;align-items:center}
 #rulerQuick button{min-width:38px;height:28px;border-radius:9px;font-size:13px;color:var(--muted);display:grid;place-items:center}
 #rulerQuick button.on{background:var(--paper);color:var(--accent);box-shadow:0 1px 3px rgba(0,0,0,.2)}
@@ -355,8 +360,9 @@ body[data-theme="classic"] .verse:first-of-type .w:first-of-type{
 
 <header>
   <div style="display:flex">
-    <button class="icon-btn" id="btnHome" title="Inicio">🏠</button>
-    <button class="icon-btn" id="btnLogHdr" title="Bitácora de estudio">📓</button>
+    <button class="icon-btn" id="btnHome" title="Inicio"><svg class="ik" viewBox="0 0 24 24"><path d="M4 11 12 4l8 7"/><path d="M6 10v10h4.6v-5.2h2.8V20H18V10" class="f"/></svg></button>
+    <button class="icon-btn" id="btnTime" title="Línea de tiempo"><svg class="ik" viewBox="0 0 24 24"><path d="M12 4.5a7.5 7.5 0 1 1 0 15 7.5 7.5 0 0 1 0-15z"/><path d="M12 8v4.2l2.8 1.8"/><path d="M12 12m-1.1 0a1.1 1.1 0 1 0 2.2 0a1.1 1.1 0 1 0 -2.2 0" class="f"/></svg></button>
+    <button class="icon-btn" id="btnLogHdr" title="Bitácora de estudio"><svg class="ik" viewBox="0 0 24 24"><path d="M4 6c2.5-1.5 5.5-1.5 8 0 2.5-1.5 5.5-1.5 8 0v12c-2.5-1.5-5.5-1.5-8 0-2.5-1.5-5.5-1.5-8 0z" class="f"/><path d="M12 6v12"/></svg></button>
   </div>
   <div class="title" id="btnTitle">
     <h1>Apocalipsis 1 <span style="font-size:11px;opacity:.6">▾</span></h1>
@@ -364,23 +370,24 @@ body[data-theme="classic"] .verse:first-of-type .w:first-of-type{
   </div>
   <div style="display:flex">
     <button class="icon-btn" id="btnQuick" title="Lectura" style="font-weight:700;font-size:15px">Aa</button>
-    <button class="icon-btn" id="btnBookmarks" title="Marcadores">🔖</button>
-    <button class="icon-btn" id="btnSearch" title="Buscar">🔍</button>
-    <button class="icon-btn" id="btnSettings" title="Ajustes">⚙️</button>
+    <button class="icon-btn" id="btnBookmarks" title="Marcadores"><svg class="ik" viewBox="0 0 24 24"><path d="M7 4h10v16l-5-3.6L7 20z" class="f"/></svg></button>
+    <button class="icon-btn" id="btnSearch" title="Buscar"><svg class="ik" viewBox="0 0 24 24"><path d="M10.5 4.5a6 6 0 1 1 0 12 6 6 0 0 1 0-12z"/><path d="M15.3 15.3 20 20"/></svg></button>
+    <button class="icon-btn" id="btnSettings" title="Ajustes"><svg class="ik" viewBox="0 0 24 24"><path d="M4 7h7"/><path d="M17 7h3"/><path d="M4 12h3"/><path d="M11 12h9"/><path d="M4 17h13"/><path d="M13 7m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" class="f"/><path d="M7 12m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" class="f"/><path d="M17 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" class="f"/></svg></button>
   </div>
 </header>
+<div id="focusCap"><b id="capTitle">Apocalipsis 1 · RVA1909</b></div>
 
 <div id="stats">
   <span></span>
   <div class="stat-line">
-    <span id="statWords">📖 <b id="stWords">—</b> palabras</span>
-    <span id="statTime">⏱ <b id="stTime">—</b> restantes</span>
-    <span id="statPpm">⚡ <b id="stWpm">200</b> ppm</span>
+    <span id="statWords">📖 <b id="stWords">—</b> <em>palabras</em></span>
+    <span id="statTime">⏱ <b id="stTime">—</b> <em>restantes</em></span>
+    <span id="statPpm">⚡ <b id="stWpm">200</b> <em>ppm</em></span>
   </div>
   <div id="rulerQuick">
-    <button data-m="manual" class="on" title="Manual">✋</button>
-    <button data-m="auto" title="Auto">▶</button>
-    <button data-m="rsvp" title="RSVP">⚡</button>
+    <button data-m="manual" class="on" title="Manual"><svg class="ik" viewBox="0 0 24 24"><path d="M9.2 6.5m-1.3 0a1.3 1.3 0 1 0 2.6 0a1.3 1.3 0 1 0 -2.6 0" class="f"/><path d="M14.8 6.5m-1.3 0a1.3 1.3 0 1 0 2.6 0a1.3 1.3 0 1 0 -2.6 0" class="f"/><path d="M9.2 12m-1.3 0a1.3 1.3 0 1 0 2.6 0a1.3 1.3 0 1 0 -2.6 0" class="f"/><path d="M14.8 12m-1.3 0a1.3 1.3 0 1 0 2.6 0a1.3 1.3 0 1 0 -2.6 0" class="f"/><path d="M9.2 17.5m-1.3 0a1.3 1.3 0 1 0 2.6 0a1.3 1.3 0 1 0 -2.6 0" class="f"/><path d="M14.8 17.5m-1.3 0a1.3 1.3 0 1 0 2.6 0a1.3 1.3 0 1 0 -2.6 0" class="f"/></svg></button>
+    <button data-m="auto" title="Auto"><svg class="ik" viewBox="0 0 24 24"><path d="M8.5 5.5 18 12l-9.5 6.5z" class="f"/></svg></button>
+    <button data-m="rsvp" title="RSVP"><svg class="ik" viewBox="0 0 24 24"><path d="M13 2 5 13.5h5.4L9 22l8-11.5h-5.4z" class="f"/></svg></button>
   </div>
 </div>
 
@@ -429,11 +436,11 @@ body[data-theme="classic"] .verse:first-of-type .w:first-of-type{
 </div>
 
 <div id="toolbar">
-  <button class="tb" id="tbRuler"><span class="ic">📏</span>Regla</button>
-  <button class="tb" id="tbHl"><span class="ic">🖍️</span>Marcador</button>
-  <button class="tb" id="tbThemes"><span class="ic">🎨</span>Temas</button>
-  <button class="tb" id="tbPrev"><span class="ic">◀️</span>Pág 1</button>
-  <button class="tb" id="tbNext"><span class="ic">▶️</span>Pág 2</button>
+  <button class="tb" id="tbRuler"><svg class="ik" viewBox="0 0 24 24"><path d="M3 9.5h18v5.5H3z"/><path d="M7.2 9.5v2.6"/><path d="M11 9.5v2.6"/><path d="M14.8 9.5v2.6"/></svg>Regla</button>
+  <button class="tb" id="tbHl"><svg class="ik" viewBox="0 0 24 24"><path d="M10 15.5 17 8.5a2.1 2.1 0 0 1 3 3L13 18.5l-4.3 1.3z"/><path d="M4 21h6"/><path d="M10 15.5 13 18.5l-4.3 1.3z" class="f"/></svg>Marcador</button>
+  <button class="tb" id="tbThemes"><svg class="ik" viewBox="0 0 24 24"><path d="M12 4a8 8 0 1 0 .3 16c1.4 0 1.9-.9 1.3-2-.6-1.2.3-2.5 1.7-2.5h1.9A3.8 3.8 0 0 0 21 11.7C21 7.3 17 4 12 4z"/><path d="M8.3 9.2m-1.3 0a1.3 1.3 0 1 0 2.6 0a1.3 1.3 0 1 0 -2.6 0" class="f"/><path d="M12 7.4m-1.3 0a1.3 1.3 0 1 0 2.6 0a1.3 1.3 0 1 0 -2.6 0" class="f"/><path d="M15.7 9.2m-1.3 0a1.3 1.3 0 1 0 2.6 0a1.3 1.3 0 1 0 -2.6 0" class="f"/><path d="M7.6 13m-1.3 0a1.3 1.3 0 1 0 2.6 0a1.3 1.3 0 1 0 -2.6 0" class="f"/></svg>Temas</button>
+  <button class="tb" id="tbPrev"><svg class="ik" viewBox="0 0 24 24"><path d="M14.5 5.5 8 12l6.5 6.5"/></svg>Pág 1</button>
+  <button class="tb" id="tbNext"><svg class="ik" viewBox="0 0 24 24"><path d="M9.5 5.5 16 12l-6.5 6.5"/></svg>Pág 2</button>
 </div>
 
 <div id="homeScr">
@@ -484,7 +491,7 @@ body[data-theme="classic"] .verse:first-of-type .w:first-of-type{
       <b>Mezcla</b><small>Lectura clásica + chrome moderno</small>
     </button>
   </div>
-  <p class="demo-tag">En la app real: 3 perfiles personalizables + importación de temas JSON</p>
+  <p class="demo-tag">8 temas · En la app real: 3 perfiles personalizables + importación de temas JSON</p>
 </div>
 
 <!-- MENÚ RÁPIDO Aa -->
@@ -503,6 +510,9 @@ body[data-theme="classic"] .verse:first-of-type .w:first-of-type{
   </div>
   <div class="set-row"><span>Vibración</span>
     <div class="seg" id="segVib"><button data-v="1">Sí</button><button data-v="0" class="on">No</button></div>
+  </div>
+  <div class="set-row"><span>🧘 Auto-ocultar barras</span>
+    <div class="seg" id="qFocus"><button data-f="1" class="on">Sí</button><button data-f="0">No</button></div>
   </div>
   <button class="btn ghost" style="width:100%" onclick="openSheet('settings')">Más ajustes ⚙️ →</button>
 </div>
@@ -568,7 +578,7 @@ body[data-theme="classic"] .verse:first-of-type .w:first-of-type{
   <div class="set-row"><span>Aviso de atención (cámara)</span>
     <div class="seg"><button class="on" onclick="toast('Demo: se activaría en la app nativa · 100% local, sin guardar datos')">Config.</button></div>
   </div>
-  <p class="demo-tag" style="margin-top:14px">ADH Bible Reader · mockup v2.17</p>
+  <p class="demo-tag" style="margin-top:14px">ADH Bible Reader · mockup v2.22</p>
 </div>
 
 <!-- NOTA -->
@@ -740,6 +750,20 @@ body[data-theme="classic"] .verse:first-of-type .w:first-of-type{
   <h3 id="objTitle">🏺 Objetos bíblicos · Paquete Medio</h3>
   <div id="objBody"></div>
   <p class="demo-tag">Ilustraciones esquemáticas del demo · en la app real: fotografías de museos con licencia libre</p>
+</div>
+
+<!-- LÍNEA DE TIEMPO -->
+<div class="sheet" id="shTime">
+  <div class="handle"></div>
+  <h3>🕰️ Línea de tiempo</h3>
+  <div class="tctx" id="tCtx"></div>
+  <div class="tlayers" id="tLayers">
+    <button class="on" data-l="biblia">📜 Línea bíblica</button>
+    <button data-l="reyes">👑 Reyes y profetas</button>
+    <button data-l="gen">🌳 Genealogía</button>
+  </div>
+  <div class="col-tl" id="tCol"></div>
+  <p class="demo-tag">Fechas aproximadas · basadas en cronologías académicas estándar (Barry/visualunit)</p>
 </div>
 
 <!-- ÍNDICE -->
@@ -946,6 +970,7 @@ function setRuler(on){
   S.rulerOn=on;tbRuler.classList.toggle("on",on);
   [ruler,dimTop,dimBottom].forEach(e=>e.style.display=on?"block":"none");
   rulerQuick.style.display=on?"flex":"none";
+  stats.classList.toggle("compact",on);
   clearInterval(S.autoTimer);stopRsvp();
   if(on){
     bookWrap.classList.add("no-rtrans");      /* aparecer en su sitio, sin vuelo desde arriba */
@@ -3208,6 +3233,375 @@ rebuildDicts();
 const _lemma=lemma;
 lemma=function(n){if(IRR[n]){const l=norm(IRR[n]);if(NDICT[l]||NDEFS[l])return l;return null}return _lemma(n)};
 renderCurrent();
+</script>
+
+
+<style>
+/* ============ TEMAS v2.18 ============ */
+/* E-INK (color y mono): sin sombras, sin blur, sin animaciones — como tinta electrónica */
+body[data-theme="einkc"],body[data-theme="einkm"]{
+  --radius:6px;
+  --bg:#fafaf6;--paper:#fdfdf9;--ink:#141414;--muted:#6d6d66;
+  --chrome:#f1f1ea;--chrome-ink:#141414;--line:#d7d7cc;
+  --font-body:Georgia,"Times New Roman",serif;--font-ui:Georgia,serif;
+  --bubble:#fdfdf9;
+}
+body[data-theme="einkc"]{--accent:#3f6f5f}
+body[data-theme="einkm"]{--accent:#2b2b2b}
+body[data-theme^="eink"] *{
+  box-shadow:none!important;text-shadow:none!important;
+  backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+  transition:none!important;animation:none!important;
+}
+body[data-theme^="eink"] .sheet,body[data-theme^="eink"] .float-bubble,body[data-theme^="eink"] #ctxMenu,body[data-theme^="eink"] #hlPal{border:1.5px solid #141414}
+body[data-theme="einkm"] header,body[data-theme="einkm"] #toolbar,body[data-theme="einkm"] #stats,
+body[data-theme="einkm"] .page,body[data-theme="einkm"] .sheet,body[data-theme="einkm"] #homeScr{filter:grayscale(1)}
+/* FLAT iOS: plano puro, sin gradientes ni cristal */
+body[data-theme="flat"]{
+  --radius:10px;
+  --bg:#ffffff;--paper:#ffffff;--ink:#1c1c1e;--muted:#8e8e93;--accent:#007aff;
+  --chrome:#f8f8f8;--chrome-ink:#1c1c1e;--line:#d8d8dc;
+  --font-body:-apple-system,"SF Pro Text","Helvetica Neue",sans-serif;
+  --font-ui:-apple-system,"SF Pro Text",sans-serif;
+  --bubble:#ffffff;
+}
+body[data-theme="flat"] *{box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+body[data-theme="flat"] .sheet{border-top:1px solid var(--line)}
+body[data-theme="flat"] .float-bubble,body[data-theme="flat"] #ctxMenu,body[data-theme="flat"] #hlPal{border:1px solid var(--line)}
+body[data-theme="flat"] .btn{border-radius:8px}
+/* MATERIAL DESIGN 3 (Material You, baseline) */
+body[data-theme="m3"]{
+  --radius:16px;
+  --bg:#FEF7FF;--paper:#FFFFFF;--ink:#1D1B20;--muted:#79747E;--accent:#6750A4;
+  --chrome:#F3EDF7;--chrome-ink:#1D1B20;--line:#CAC4D0;
+  --font-body:Georgia,serif;--font-ui:Roboto,-apple-system,sans-serif;
+  --bubble:#ECE6F0;
+}
+body[data-theme="m3"] .sheet{border-radius:28px 28px 0 0}
+body[data-theme="m3"] .btn{border-radius:20px}
+body[data-theme="m3"] .icon-btn{border-radius:50%}
+body[data-theme="m3"] .tb.on{background:#E8DEF8;border-radius:16px}
+body[data-theme="m3"] .seg{border-radius:20px}
+body[data-theme="m3"] .seg button{border-radius:16px}
+</style>
+<script>
+/* ============ v2.18 · slide-down para cerrar sheets + 4 temas nuevos ============ */
+/* tarjetas de temas nuevas */
+(function(){
+  const grid=document.querySelector(".theme-grid");
+  const NT=[
+   ["einkc","E-Ink color","Tinta electrónica en color","background:#fdfdf9;color:#3f6f5f;border:1px solid #d7d7cc;font-family:Georgia,serif"],
+   ["einkm","E-Ink mono","Tinta monocromática pura","background:#fff;color:#141414;border:1px solid #c9c9c0;font-family:Georgia,serif"],
+   ["flat","Flat iOS","Plano: sin sombras ni cristal","background:#fff;color:#007aff;border:1px solid #d8d8dc;font-family:-apple-system,sans-serif"],
+   ["m3","Material You","Material Design 3","background:#ECE6F0;color:#6750A4;border:1px solid #CAC4D0;font-family:sans-serif"]
+  ];
+  NT.forEach(([id,name,sub,sw])=>{
+    const b=document.createElement("button");
+    b.className="theme-card";b.dataset.t=id;
+    b.innerHTML='<div class="sw" style="'+sw+'">Aa</div><b>'+name+'</b><small>'+sub+'</small>';
+    b.onclick=()=>{
+      document.querySelectorAll(".theme-card").forEach(x=>x.classList.remove("sel"));
+      b.classList.add("sel");document.body.dataset.theme=id;
+      toast("Tema: "+name);
+    };
+    grid.appendChild(b);
+  });
+})();
+/* gesto slide-down en TODAS las pantallas emergentes */
+document.querySelectorAll(".sheet").forEach(sh=>{
+  let sy=null,dy=0,drag=false;
+  sh.addEventListener("touchstart",e=>{
+    if(e.target.closest("textarea,input,select,.bg-dots,.net-chips"))return;
+    sy=e.touches[0].clientY;dy=0;drag=false;
+  },{passive:true});
+  sh.addEventListener("touchmove",e=>{
+    if(sy===null)return;
+    const d=e.touches[0].clientY-sy;
+    if(!drag){
+      if(d>10&&sh.scrollTop<=0){drag=true;sh.style.transition="none"}
+      else if(d<-4||sh.scrollTop>0){sy=null;return}
+      else return;
+    }
+    dy=Math.max(0,d);
+    sh.style.transform="translateY("+dy+"px)";
+    if(overlay)overlay.style.opacity=String(Math.max(0.15,1-dy/380));
+    e.preventDefault();
+  },{passive:false});
+  sh.addEventListener("touchend",()=>{
+    if(!drag){sy=null;return}
+    sh.style.transition="";overlay.style.opacity="";
+    if(dy>95){
+      sh.style.transform="";
+      closeSheets();                 /* pasa el umbral: se desliza y cierra */
+    }else{
+      sh.style.transform="translateY(0)";
+      setTimeout(()=>sh.style.transform="",380);   /* rebote de vuelta */
+    }
+    sy=null;drag=false;dy=0;
+  });
+});
+</script>
+
+
+<style>
+/* ============ v2.19 ============ */
+.ik{width:22px;height:22px;display:block;margin:0 auto}
+.ik path{stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.icon-btn .ik{width:23px;height:23px}
+#rulerQuick .ik{width:18px;height:18px}
+body[data-theme="m3"] .ik path{stroke-width:2}
+body[data-theme="m3"] .ik path.f{fill:currentColor;stroke-width:.4}
+body[data-theme^="eink"] .ik path{stroke-width:2.3}
+body[data-theme^="eink"] .ik path.f{fill:currentColor}
+body[data-theme="flat"] .ik path{stroke-width:1.5}
+body[data-theme="kindle"] .ik path{stroke-width:1.6}
+body[data-theme="ios"] .ik path.f{fill:currentColor;stroke-width:.4}
+/* modo enfoque */
+header,#stats,#toolbar{transition:transform .6s cubic-bezier(.25,.8,.3,1),opacity .55s}
+#focusCap{position:fixed;top:calc(env(safe-area-inset-top,0px) + 10px);left:50%;z-index:34;
+  transform:translateX(-50%) translateY(-180%);opacity:0;
+  background:rgba(128,128,128,.14);backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px);
+  border:1px solid var(--line);color:var(--ink);
+  padding:6px 16px;border-radius:20px;font-size:12px;font-family:var(--font-ui);
+  transition:transform .6s cubic-bezier(.25,.8,.3,1),opacity .55s;white-space:nowrap}
+body.zfocus #focusCap{transform:translateX(-50%) translateY(0);opacity:1}
+body.zfocus.showtop #focusCap{transform:translateX(-50%) translateY(-180%);opacity:0}
+body.zfocus header{position:fixed;top:0;left:0;right:0;z-index:36;transform:translateY(-105%);opacity:0;pointer-events:none}
+body.zfocus.showtop header{transform:translateY(0);opacity:1;pointer-events:auto}
+body.zfocus #stats{position:fixed;top:calc(env(safe-area-inset-top,0px) + 56px);left:0;right:0;z-index:35;transform:translateY(-260%);opacity:0;pointer-events:none}
+body.zfocus.showtop #stats{transform:translateY(0);opacity:1;pointer-events:auto}
+body.zfocus #toolbar{position:fixed;bottom:0;left:0;right:0;z-index:36;transform:translateY(110%);opacity:0;pointer-events:none}
+body.zfocus.showbot #toolbar{transform:translateY(0);opacity:1;pointer-events:auto}
+body.zfocus #cornerHint{display:none!important}
+</style>
+<script>
+/* ---------- MODO ENFOQUE (clases, auto-ocultado confiable) ---------- */
+S.focus=false;let barsT=null;
+function updCapsule(){capTitle.textContent=chapLabel()+" · RVA1909"}
+function hideBars(){document.body.classList.remove("showtop","showbot")}
+function armHide(){clearTimeout(barsT);barsT=setTimeout(hideBars,3800)}
+function pokeBars(which){
+  const b=document.body;
+  b.classList.toggle(which);
+  if(b.classList.contains("showtop")||b.classList.contains("showbot"))armHide();
+  else clearTimeout(barsT);
+}
+function setFocus(on){
+  S.focus=on;
+  const b=document.body;
+  b.classList.toggle("zfocus",on);hideBars();clearTimeout(barsT);
+  updCapsule();
+  qFocus.querySelectorAll("button").forEach(x=>x.classList.toggle("on",(x.dataset.f==="1")===on));
+  if(on){closeSheets();toast("🧘 Enfoque · toca arriba o abajo para las barras")}
+  else toast("Modo enfoque desactivado");
+}
+qFocus.querySelectorAll("button").forEach(b=>b.onclick=()=>setFocus(b.dataset.f==="1"));
+focusCap.onclick=()=>pokeBars("showtop");
+bookWrap.addEventListener("click",e=>{
+  if(!S.focus)return;
+  const r=bookWrap.getBoundingClientRect();
+  if(e.clientY-r.top<80){pokeBars("showtop");e.stopPropagation()}
+  else if(r.bottom-e.clientY<95){pokeBars("showbot");e.stopPropagation()}
+},true);
+/* usar las barras reinicia el temporizador de ocultado */
+document.querySelector("header").addEventListener("click",()=>{if(S.focus||S.autoHide)armHide()});
+document.getElementById("toolbar").addEventListener("click",()=>{if(S.focus||S.autoHide)armHide()});
+document.getElementById("stats").addEventListener("click",()=>{if(S.focus||S.autoHide)armHide()});
+const _lc19=loadChapter;
+loadChapter=function(){_lc19.apply(null,arguments);if(S.focus)updCapsule()};
+/* ---------- PALETA UNIFICADA: el botón Marcador usa el MISMO componente ---------- */
+hlColors.style.display="none";hlColors.remove();     /* adiós paleta vieja */
+function showPalPicker(){
+  palGroup=null;
+  hlPal.querySelector(".pal-more").style.display="none";
+  hlPal.querySelector(".pal-x").textContent="✕ Cerrar";
+  hlPal.querySelectorAll(".c").forEach(b=>b.classList.toggle("sel",b.dataset.c===S.hlColor));
+  hlPal.style.display="flex";
+  const w=bookWrap.getBoundingClientRect();
+  hlPal.style.top=(w.height-72)+"px";hlPal.style.left="8px";
+  hlPal.style.left=((w.width-hlPal.offsetWidth)/2)+"px";
+}
+const _showPal=showPal;
+showPal=function(g,el,x,y){
+  hlPal.querySelector(".pal-more").style.display="";
+  hlPal.querySelector(".pal-x").textContent="✕ Quitar";
+  _showPal(g,el,x,y);
+};
+tbHl.onclick=()=>{
+  S.hlOn=!S.hlOn;tbHl.classList.toggle("on",S.hlOn);
+  if(S.hlOn)showPalPicker();else hlPal.style.display="none";
+  toast(S.hlOn?"Marcador continuo: arrastra sobre el texto":"Marcador desactivado");
+};
+hlPal.querySelector(".pal-x").onclick=()=>{
+  if(palGroup===null){          /* modo selector: cerrar = apagar marcador */
+    S.hlOn=false;tbHl.classList.remove("on");
+    hlPal.style.display="none";toast("Marcador desactivado");return;
+  }
+  hlOfGroup(palGroup).forEach(x=>{x.classList.remove("hl-y","hl-g","hl-p","hl-b");delete x.dataset.hg});
+  hlPal.style.display="none";toast("Subrayado eliminado");
+};
+/* mientras el marcador continuo está activo, la paleta reaparece tras cada trazo */
+document.addEventListener("pointerup",()=>{
+  if(S.hlOn&&hlPal.style.display==="none")setTimeout(showPalPicker,60);
+});
+</script>
+
+
+<style>
+/* ============ v2.21 · línea de tiempo ============ */
+.tctx{background:var(--accent);color:#fff;border-radius:16px;padding:13px 15px;margin-bottom:12px;box-shadow:0 6px 18px rgba(0,0,0,.18)}
+.tctx small{opacity:.8;font-size:9.5px;letter-spacing:1px;font-family:var(--font-ui)}
+.tctx b{display:block;font-size:16px;margin:2px 0 6px}
+.tctx .trow{display:flex;flex-wrap:wrap;gap:5px 16px;font-size:11.5px;font-family:var(--font-ui)}
+.tctx .trow div span{display:block;opacity:.75;font-size:9px;letter-spacing:.5px}
+.tlayers{display:flex;gap:7px;margin-bottom:12px}
+.tlayers button{flex:1;padding:9px 4px;border-radius:16px;font-size:11px;font-weight:600;background:rgba(0,0,0,.07);color:var(--muted);font-family:var(--font-ui)}
+.tlayers button.on{background:var(--accent);color:#fff}
+.col-tl{position:relative;padding-left:24px}
+.col-tl::before{content:"";position:absolute;left:8px;top:6px;bottom:6px;width:4px;border-radius:4px;background:linear-gradient(#c9bfa5,var(--accent),#c9bfa5)}
+.tl-node{position:relative;margin-bottom:12px;background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:9px 12px}
+.tl-node::before{content:"";position:absolute;left:-21px;top:13px;width:10px;height:10px;border-radius:50%;background:#c9bfa5;border:2.5px solid var(--bg)}
+.tl-node.here{border-color:#c0392b;box-shadow:0 4px 14px rgba(192,57,43,.2)}
+.tl-node.here::before{background:#c0392b;transform:scale(1.35)}
+.tl-node small{font-size:10px;color:var(--muted);letter-spacing:.4px;font-family:var(--font-ui)}
+.tl-node b{display:block;font-size:13px;margin:1px 0}
+.here-tag{display:inline-block;background:#c0392b;color:#fff;font-size:8.5px;font-weight:700;padding:2px 8px;border-radius:8px;margin-left:6px;vertical-align:middle;font-family:var(--font-ui)}
+.dualk{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:7px}
+.dualk .k{border-radius:10px;padding:8px;font-size:10px;font-family:var(--font-ui)}
+.dualk .sur{background:#dbeee9;border:1px solid #b5d8cd;color:#1e4a3f}
+.dualk .norte{background:#fdeadb;border:1px solid #f0cfa8;color:#5a3d16}
+.dualk .k b{font-size:10.5px;display:block;margin-bottom:2px}
+</style>
+<script>
+/* ============ v2.21 · LÍNEA DE TIEMPO CONTEXTUAL (Propuesta B) ============ */
+sheets.time=shTime;
+const T_ERAS=["Creación y diluvio","Patriarcas","Egipto y Éxodo","Conquista y Jueces","Reino Unido","Reino Dividido","Exilio y Retorno","Entre Testamentos","Nuevo Testamento"];
+/* contexto por libro: [era, año, gobernante, profeta, pct 0-100] */
+const BC=(e,y,r,p,pc)=>({e,y,r,p,pc});
+const BOOKCTX=[
+BC(1,"c. 2000 a.C.","— (era patriarcal)","—",12),
+BC(2,"c. 1450 a.C.","Faraón de Egipto","Moisés",26),
+BC(2,"c. 1445 a.C.","—","Moisés",27),
+BC(2,"c. 1440 a.C.","—","Moisés",28),
+BC(2,"c. 1406 a.C.","—","Moisés",30),
+BC(3,"c. 1400 a.C.","—","Josué",32),
+BC(3,"c. 1200 a.C.","«no había rey»","jueces",36),
+BC(3,"c. 1100 a.C.","—","época de jueces",38),
+BC(4,"c. 1050 a.C.","Saúl (1050–1010)","Samuel",44),
+BC(4,"c. 1000 a.C.","David (1010–970)","Natán y Gad",46),
+BC(4,"c. 950 a.C.","Salomón (970–930)","Natán",49),
+BC(5,"c. 850 a.C.","Reino dividido","Elías y Eliseo",56),
+BC(4,"c. 1000 a.C.","David","Natán",46),
+BC(5,"900–586 a.C.","Reyes de Judá","varios",58),
+BC(6,"458 a.C.","Artajerjes (Persia)","Esdras",78),
+BC(6,"445 a.C.","Artajerjes","Nehemías",80),
+BC(6,"c. 480 a.C.","Asuero (Persia)","—",76),
+BC(1,"época patriarcal","—","Job",14),
+BC(4,"c. 1000 a.C.","David","salmistas",47),
+BC(4,"c. 950 a.C.","Salomón","—",49),
+BC(4,"c. 940 a.C.","Salomón","—",49),
+BC(4,"c. 950 a.C.","Salomón","—",49),
+BC(5,"740–681 a.C.","Uzías → Ezequías (Judá)","Isaías y Miqueas",60),
+BC(5,"626–585 a.C.","Josías → Sedequías","Jeremías",64),
+BC(6,"586 a.C.","— (Jerusalén caída)","Jeremías",66),
+BC(6,"593–571 a.C.","exilio · Nabucodonosor","Ezequiel",68),
+BC(6,"605–530 a.C.","Nabucodonosor → Ciro","Daniel",70),
+BC(5,"750–715 a.C.","Jeroboam II (Israel)","Oseas",59),
+BC(5,"c. 835 a.C.","Joás (Judá)","Joel",57),
+BC(5,"c. 760 a.C.","Jeroboam II (Israel)","Amós",59),
+BC(6,"c. 585 a.C.","—","Abdías",67),
+BC(5,"c. 780 a.C.","Jeroboam II","Jonás",58),
+BC(5,"750–686 a.C.","Jotam → Ezequías","Miqueas",60),
+BC(5,"c. 650 a.C.","Manasés → Josías","Nahúm",62),
+BC(5,"c. 605 a.C.","Joacim","Habacuc",64),
+BC(5,"c. 630 a.C.","Josías","Sofonías",63),
+BC(6,"520 a.C.","Darío (Persia) · Zorobabel","Hageo",74),
+BC(6,"520–480 a.C.","Darío","Zacarías",74),
+BC(6,"440–430 a.C.","época persa","Malaquías",78),
+BC(8,"c. 30 d.C.","Tiberio · Herodes Antipas","Juan el Bautista",92),
+BC(8,"c. 30 d.C.","Tiberio · Pilato","Juan el Bautista",92),
+BC(8,"c. 30 d.C.","Tiberio · Herodes","Juan el Bautista",92),
+BC(8,"c. 30 d.C.","Tiberio · Pilato","Juan el Bautista",92),
+BC(8,"30–62 d.C.","Claudio → Nerón","los apóstoles",94),
+BC(8,"c. 57 d.C.","Nerón","Pablo",95),
+BC(8,"c. 55 d.C.","Claudio/Nerón","Pablo",95),
+BC(8,"c. 56 d.C.","Nerón","Pablo",95),
+BC(8,"c. 49 d.C.","Claudio","Pablo",94),
+BC(8,"c. 61 d.C.","Nerón","Pablo (preso)",95),
+BC(8,"c. 61 d.C.","Nerón","Pablo (preso)",95),
+BC(8,"c. 61 d.C.","Nerón","Pablo (preso)",95),
+BC(8,"c. 51 d.C.","Claudio","Pablo",94),
+BC(8,"c. 52 d.C.","Claudio","Pablo",94),
+BC(8,"c. 63 d.C.","Nerón","Pablo",95),
+BC(8,"c. 66 d.C.","Nerón","Pablo",96),
+BC(8,"c. 63 d.C.","Nerón","Pablo",95),
+BC(8,"c. 61 d.C.","Nerón","Pablo (preso)",95),
+BC(8,"c. 65 d.C.","Nerón","—",96),
+BC(8,"c. 48 d.C.","Claudio","Jacobo",93),
+BC(8,"c. 63 d.C.","Nerón","Pedro",95),
+BC(8,"c. 66 d.C.","Nerón","Pedro",96),
+BC(8,"c. 90 d.C.","Domiciano","Juan",98),
+BC(8,"c. 90 d.C.","Domiciano","Juan",98),
+BC(8,"c. 90 d.C.","Domiciano","Juan",98),
+BC(8,"c. 66 d.C.","Nerón","Judas",96),
+BC(8,"90–95 d.C.","Domiciano","Juan en Patmos",99)];
+const T_LAYERS={
+biblia:[["c. 2165 a.C.","Nace Abraham",12],["c. 1876 a.C.","José: Israel baja a Egipto",18],["c. 1450 a.C.","EL ÉXODO · la Ley en el Sinaí",26],
+["c. 1400 a.C.","Entrada a la Tierra Prometida",32],["1050 a.C.","Saúl: comienza la monarquía",44],["966 a.C.","Salomón construye el Templo",49],
+["930 a.C.","EL REINO SE DIVIDE",52],["722 a.C.","Cae Samaria ante Asiria",61],["586 a.C.","Cae Jerusalén · exilio a Babilonia",66],
+["538 a.C.","1er regreso · Zorobabel",72],["458 · 432 a.C.","Regresos de Esdras y Nehemías",78],["5 a.C.","Nace Jesús",90],
+["30 d.C.","Cruz, resurrección y Pentecostés",93],["46–61 d.C.","Viajes y prisión de Pablo",95],["90–95 d.C.","Juan exiliado en Patmos",99]],
+reyes:[["1050–1010","Saúl · profeta: Samuel",44],["1010–970","David · Natán y Gad",46],["970–930","Salomón · el Templo (966)",49],
+["930","LA DIVISIÓN: Judá 🟢 / Israel 🟠",52],["875–848","Elías frente a Acab 🟠",55],["848–797","Eliseo 🟠",57],
+["767–740","Uzías 🟢 · Jonás, Oseas y Amós 🟠",59],["740–681","Isaías con Acaz y Ezequías 🟢",60],["722","🟠 CAE ISRAEL ante Asiria",61],
+["640–609","Josías 🟢 · Sofonías y Jeremías",63],["605–530","Daniel en Babilonia",65],["586","🟢 CAE JUDÁ · Jerusalén destruida",66],
+["520–480","Zacarías y Hageo · reconstrucción",74],["440–430","Malaquías, último profeta del AT",78]],
+gen:[["1ª gen.","ADÁN → Set → Enós…",2],["10ª gen.","NOÉ → Sem",6],["c. 2165","ABRAHAM → Isaac → Jacob",12],
+["","JUDÁ · la línea mesiánica",16],["","Fares → … → Boaz → Obed → Isaí",38],["c. 1040","DAVID, el rey",46],
+["","Salomón → Roboam → … reyes de Judá",52],["c. 520","Zorobabel, tras el exilio",72],["","José, esposo de María",89],
+["5 a.C.","✝ JESÚS · «hijo de David, hijo de Abraham»",90]]};
+let tLayer="biblia";
+function renderTime(){
+  const c=BOOKCTX[CUR.b]||BOOKCTX[65];
+  tCtx.innerHTML='<small>ESTÁS LEYENDO</small><b>'+chapLabel()+' · '+c.y+'</b>'+
+    '<div class="trow"><div><span>👑 GOBERNANTE</span>'+c.r+'</div><div><span>📣 PROFETA</span>'+c.p+'</div><div><span>⚡ ÉPOCA</span>'+T_ERAS[c.e]+'</div></div>';
+  const items=T_LAYERS[tLayer];
+  let hereIdx=-1;
+  items.forEach((it,i)=>{if(it[2]<=c.pc)hereIdx=i});
+  tCol.innerHTML=items.map((it,i)=>{
+    const here=i===hereIdx;
+    return '<div class="tl-node'+(here?" here":"")+'"><small>'+it[0]+'</small><b>'+it[1]+(here?'<span class="here-tag">ESTÁS AQUÍ</span>':"")+'</b></div>';
+  }).join("")+(tLayer==="reyes"?
+    '<div class="tl-node"><small>EL REINO DIVIDIDO EN PARALELO</small><div class="dualk">'+
+    '<div class="k sur"><b>🟢 JUDÁ (sur)</b>Roboam → Josafat → Ezequías → Josías → Sedequías · cae en 586 a.C.</div>'+
+    '<div class="k norte"><b>🟠 ISRAEL (norte)</b>Jeroboam I → Omri → Acab → Jehú → Oseas · cae en 722 a.C.</div></div></div>':"");
+  setTimeout(()=>{const h=tCol.querySelector(".here");if(h)h.scrollIntoView({block:"center",behavior:"smooth"})},250);
+}
+tLayers.querySelectorAll("button").forEach(b=>b.onclick=()=>{
+  tLayers.querySelectorAll("button").forEach(x=>x.classList.toggle("on",x===b));
+  tLayer=b.dataset.l;renderTime();
+});
+btnTime.onclick=()=>{renderTime();openSheet("time")};
+/* ============ AUTO-OCULTADO TIPO KINDLE (por defecto) ============ */
+S.autoHide=true;let idleT=null;
+function hideChrome(){
+  if(!S.autoHide)return;
+  if(overlay.classList.contains("show"))return;
+  if(typeof quickHl!=="undefined"&&(quickHl||painting))return;
+  document.body.classList.add("zfocus");hideBars();updCapsule();
+}
+function scheduleHide(ms){clearTimeout(idleT);if(S.autoHide)idleT=setTimeout(hideChrome,ms||6000)}
+function setFocus(on,quiet){
+  S.autoHide=on;S.focus=on;
+  qFocus.querySelectorAll("button").forEach(x=>x.classList.toggle("on",(x.dataset.f==="1")===on));
+  if(on){scheduleHide(4000);if(!quiet)toast("Las barras se ocultan solas · toca arriba o abajo")}
+  else{clearTimeout(idleT);clearTimeout(barsT);document.body.classList.remove("zfocus","showtop","showbot");if(!quiet)toast("Barras siempre visibles")}
+}
+document.addEventListener("pointerdown",()=>{if(S.autoHide&&!overlay.classList.contains("show"))scheduleHide()},{passive:true});
+const _cs21=closeSheets;
+closeSheets=function(){_cs21();if(S.autoHide)scheduleHide(4500)};
+setFocus(true,true);
+setTimeout(()=>toast("🧘 Las barras se ocultan al leer · toca arriba o abajo para verlas"),1800);
 </script>
 
 </body>
