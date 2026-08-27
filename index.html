@@ -39,6 +39,14 @@ body[data-theme="mix"]{
   --font-ui:-apple-system,"SF Pro Text",sans-serif;
   --bubble:rgba(255,253,247,.93);
 }
+body[data-dark="1"]{
+  --bg:#0f0f11!important;--paper:#191a1c!important;--ink:#e8e6e1!important;--muted:#98958c!important;
+  --chrome:rgba(23,24,26,.86)!important;--chrome-ink:#e8e6e1!important;--line:#2b2c30!important;
+  --bubble:rgba(32,33,36,.95)!important;
+}
+body[data-dark="1"] .seg{background:rgba(255,255,255,.13)}
+body[data-dark="1"] .net-chip,body[data-dark="1"] #tplChips button,body[data-dark="1"] .chap-grid button{background:rgba(255,255,255,.12);color:var(--ink)}
+body[data-dark="1"] #rulerQuick{background:rgba(255,255,255,.13)}
 /* ============ BASE ============ */
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;height:100%}
@@ -334,9 +342,11 @@ body[data-theme="classic"] .verse:first-of-type .w:first-of-type{
 .bm-row small{color:var(--muted);display:block;font-size:11px}
 .bm-row .go{color:var(--accent);font-weight:600;font-size:13px}
 /* toast */
-#toast{position:fixed;left:50%;bottom:110px;transform:translateX(-50%) translateY(20px);
-  background:var(--ink);color:var(--paper);padding:9px 18px;border-radius:22px;font-size:13px;
-  font-family:var(--font-ui);opacity:0;transition:all .3s;z-index:80;pointer-events:none;white-space:nowrap}
+#toast{position:fixed;left:50%;bottom:112px;transform:translateX(-50%) translateY(20px);
+  background:rgba(18,18,20,.93);color:#fff;border:1px solid rgba(255,255,255,.18);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  padding:9px 18px;border-radius:22px;font-size:13px;max-width:88vw;white-space:normal;text-align:center;
+  font-family:var(--font-ui);opacity:0;transition:all .3s;z-index:80;pointer-events:none}
 #toast.show{opacity:.95;transform:translateX(-50%) translateY(0)}
 .demo-tag{font-size:10px;color:var(--muted);text-align:center;padding:6px 20px 0;font-family:var(--font-ui)}
 </style>
@@ -353,6 +363,7 @@ body[data-theme="classic"] .verse:first-of-type .w:first-of-type{
     <p id="verLabel">RVA 1909 ⇄</p>
   </div>
   <div style="display:flex">
+    <button class="icon-btn" id="btnQuick" title="Lectura" style="font-weight:700;font-size:15px">Aa</button>
     <button class="icon-btn" id="btnBookmarks" title="Marcadores">🔖</button>
     <button class="icon-btn" id="btnSearch" title="Buscar">🔍</button>
     <button class="icon-btn" id="btnSettings" title="Ajustes">⚙️</button>
@@ -476,6 +487,26 @@ body[data-theme="classic"] .verse:first-of-type .w:first-of-type{
   <p class="demo-tag">En la app real: 3 perfiles personalizables + importación de temas JSON</p>
 </div>
 
+<!-- MENÚ RÁPIDO Aa -->
+<div class="sheet" id="shQuick">
+  <div class="handle"></div>
+  <h3>Aa · Lectura</h3>
+  <div class="set-row"><span>Modo</span>
+    <div class="seg" id="qRead"><button data-r="pages" class="on">Páginas</button><button data-r="scroll">Continua</button></div>
+  </div>
+  <div class="set-row"><span>Tamaño de letra</span><input type="range" id="rgFont2" min="15" max="26" value="19"></div>
+  <div class="set-row"><span>Tipo de letra</span>
+    <div class="seg" id="segFont"><button data-f="serif" class="on">Serif</button><button data-f="sans">Sans</button><button data-f="georgia">Clásica</button></div>
+  </div>
+  <div class="set-row"><span>Apariencia</span>
+    <div class="seg" id="segDark"><button data-d="0" class="on">☀️ Claro</button><button data-d="1">🌙 Oscuro</button></div>
+  </div>
+  <div class="set-row"><span>Vibración</span>
+    <div class="seg" id="segVib"><button data-v="1">Sí</button><button data-v="0" class="on">No</button></div>
+  </div>
+  <button class="btn ghost" style="width:100%" onclick="openSheet('settings')">Más ajustes ⚙️ →</button>
+</div>
+
 <!-- AJUSTES -->
 <div class="sheet" id="shSettings">
   <div class="handle"></div>
@@ -494,6 +525,9 @@ body[data-theme="classic"] .verse:first-of-type .w:first-of-type{
       <button data-g="focus">Foco</button>
       <button data-g="none">Sin guía</button>
     </div>
+  </div>
+  <div class="set-row"><span>La regla pasa página y capítulo</span>
+    <div class="seg" id="segPass"><button data-p="1" class="on">Sí</button><button data-p="0">No</button></div>
   </div>
   <div class="set-row"><span>Color de regla</span>
     <div class="rc-dots" id="rulerColors">
@@ -534,7 +568,7 @@ body[data-theme="classic"] .verse:first-of-type .w:first-of-type{
   <div class="set-row"><span>Aviso de atención (cámara)</span>
     <div class="seg"><button class="on" onclick="toast('Demo: se activaría en la app nativa · 100% local, sin guardar datos')">Config.</button></div>
   </div>
-  <p class="demo-tag" style="margin-top:14px">ADH Bible Reader · mockup v2.14</p>
+  <p class="demo-tag" style="margin-top:14px">ADH Bible Reader · mockup v2.17</p>
 </div>
 
 <!-- NOTA -->
@@ -2347,6 +2381,833 @@ wireDownload(dlFull,dlFullLbl,130,"✓ Descargado · fotos HD de sitios disponib
     console.log("Paquete Medio: "+Object.keys(MAPD.p).length+" lugares, "+MAPD.c.length+" segmentos de costa");
   }catch(e){console.error("mapas",e)}
 })();
+</script>
+
+
+<script>
+/* ============ v2.15 · UX real-device fixes ============ */
+sheets.quick=shQuick;
+/* toast legible y breve */
+function toast(m,ms){const t=document.getElementById("toast");t.textContent=m;t.classList.add("show");
+clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove("show"),ms||1600)}
+/* vibración (nota: Safari iOS no expone vibrate; la app nativa sí) */
+S.vib=false;
+function vib(){if(S.vib&&navigator.vibrate)navigator.vibrate(8)}
+/* ---- encadenado de capítulos ---- */
+function loadChapter(b,c,vTarget,opts){
+  if(!BIBLE){toast("La Biblia completa aún está cargando…");return}
+  CUR={b,c};
+  const[a1,a2]=splitPages(BIBLE[b][c]);
+  P1=a1;P2=a2;
+  TOTAL_WORDS=[...P1,...P2].reduce((a,[,t])=>a+t.split(" ").length,0);
+  btnTitle.querySelector("h1").innerHTML=chapLabel()+' <span style="font-size:11px;opacity:.6">▾</span>';
+  verLabel.textContent="RVA 1909 ⇄";
+  renderCurrent();updStats();
+  if(opts&&opts.end&&S.readMode==="pages"&&P2.length){S.page=2;setTurn(1);page1.style.boxShadow=""}
+  S.bookmarks[0].pos=chapLabel()+" · pág "+S.page;
+  const pg=curPage();pg.scrollTop=(opts&&opts.end)?pg.scrollHeight:0;
+  if(S.rulerOn)setTimeout(()=>placeRulerAtLine(opts&&opts.end?rulerLastLine(curPage()):0),350);
+  if(vTarget)setTimeout(()=>jumpToVerse(vTarget),160);
+}
+function nextChapter(){
+  if(!BIBLE)return;
+  let b=CUR.b,c=CUR.c+1;
+  if(c>=BIBLE[b].length){b++;c=0}
+  if(b>=66){toast("🏁 Has llegado al final de la Biblia");if(S.rulerOn)clearInterval(S.autoTimer);return}
+  loadChapter(b,c);vib();
+  toast(BOOKS_ES[b]+" "+(c+1));
+}
+function prevChapter(){
+  if(!BIBLE)return;
+  let b=CUR.b,c=CUR.c-1;
+  if(c<0){b--;if(b<0){toast("📖 Estás en Génesis 1, el principio");return}c=BIBLE[b].length-1}
+  loadChapter(b,c,null,{end:true});vib();
+  toast(BOOKS_ES[b]+" "+(c+1));
+}
+function finishPage(n){
+  killBubbles();S.page=n;updStats();vib();
+  cornerHint.textContent=n===1?"← desliza":"desliza →";
+  cornerHint.style.right=n===1?"10px":"auto";cornerHint.style.left=n===1?"auto":"10px";
+  S.bookmarks[0].pos=chapLabel()+" · pág "+n;   /* guardado silencioso, sin toast intrusivo */
+  if(typeof rulerAfterPage==="function")setTimeout(rulerAfterPage,620);
+}
+function goPage(n){
+  if(S.readMode==="scroll"){n===2?nextChapter():prevChapter();return}
+  if(n===2&&S.page===2){nextChapter();return}   /* pág 2 → siguiente capítulo */
+  if(n===1&&S.page===1){prevChapter();return}   /* pág 1 ← capítulo anterior */
+  const target=n===2?1:0;
+  if(S.anim&&HW3D){
+    page1.classList.add("animate");
+    requestAnimationFrame(()=>setTurn(target));
+    setTimeout(()=>{page1.classList.remove("animate");page1.style.boxShadow=""},600);
+  }else{page1.classList.remove("animate");setTurn(target);page1.style.boxShadow=""}
+  finishPage(n);
+}
+/* swipe de borde: cruzar capítulos con el mismo gesto */
+let e3sx=null,e3sy=null,leafActive=false;
+bookWrap.addEventListener("touchstart",e=>{if(e.touches.length===1){e3sx=e.touches[0].clientX;e3sy=e.touches[0].clientY}},{passive:true});
+bookWrap.addEventListener("touchmove",()=>{if(typeof pgDrag!=="undefined"&&pgDrag)leafActive=true},{passive:true});
+bookWrap.addEventListener("touchend",e=>{
+  const was=leafActive;leafActive=false;
+  if(e3sx===null)return;
+  const dx=e.changedTouches[0].clientX-e3sx,dy=e.changedTouches[0].clientY-e3sy;e3sx=null;
+  if(was||quickHl||painting)return;
+  if(overlay.classList.contains("show"))return;
+  if(e.target.closest(".sheet,#hlPal,.float-bubble,#ctxMenu,#homeScr"))return;
+  if(Math.abs(dx)<75||Math.abs(dx)<Math.abs(dy)*1.3)return;
+  if(S.readMode==="pages"){
+    if(dx<0&&S.page===2)nextChapter();
+    else if(dx>0&&S.page===1)prevChapter();
+  }else{dx<0?nextChapter():prevChapter()}
+});
+/* ---- regla: llega al fondo y pasa página/capítulo (configurable) ---- */
+S.autoPass=true;
+segPass.querySelectorAll("button").forEach(b=>b.onclick=()=>{
+  segPass.querySelectorAll("button").forEach(x=>x.classList.remove("on"));b.classList.add("on");
+  S.autoPass=b.dataset.p==="1";
+  toast(S.autoPass?"La regla pasará de página y capítulo sola":"La regla se detiene al final del capítulo");
+});
+function placeRulerAtLine(li){
+  const pg=rulerMetrics();
+  li=Math.max(0,Math.min(li,rulerLastLine(pg)));
+  rulerLine=li;
+  const bh=rulerLH+14;
+  const yContent=rulerAnchor+li*rulerLH;
+  const H=bookWrap.offsetHeight;
+  const maxS=Math.max(0,pg.scrollHeight-pg.clientHeight);
+  let st=pg.scrollTop,yView=yContent-st;
+  if((yView>H*0.6&&st<maxS-2)||(yView<64&&st>0)){
+    st=Math.max(0,Math.min(maxS,yContent-H*0.42));
+    if(bookWrap.classList.contains("no-rtrans"))pg.scrollTop=st;
+    else pg.scrollTo({top:st,behavior:"smooth"});
+    yView=yContent-st;                          /* sin scroll restante, la banda baja hasta la última línea */
+  }
+  ruler.style.height=bh+"px";
+  ruler.style.top=(yView-7)+"px";
+  layoutRuler();
+}
+function applyRulerMode(){
+  clearInterval(S.autoTimer);stopRsvp();
+  if(S.rulerMode==="auto"){
+    const wpl=8;
+    S.autoTimer=setInterval(()=>{
+      const pg=curPage();
+      if(rulerLine>=rulerLastLine(pg)){
+        if(S.readMode==="pages"&&S.page===1&&P2.length){goPage(2);return}
+        if(S.autoPass){nextChapter();return}    /* sigue leyendo la Biblia sin parar */
+        clearInterval(S.autoTimer);toast("Fin del capítulo 🏁");return;
+      }
+      placeRulerAtLine(rulerLine+1);
+    },(60/S.wpm)*wpl*1000);
+  }else if(S.rulerMode==="rsvp"){startRsvp()}
+}
+/* ---- resultados de búsqueda: fila completa tocable ---- */
+function verseRow(b,ci,vv,t,hl,btn,cb){
+  const row=document.createElement("div");row.className="bm-row";row.style.cursor="pointer";
+  let frag=esc(t.slice(0,120));
+  if(hl){const i=norm(t).indexOf(hl);
+    if(i>=0)frag=esc(t.slice(Math.max(0,i-25),i))+"<b>"+esc(t.substr(i,hl.length))+"</b>"+esc(t.slice(i+hl.length,i+hl.length+55));}
+  row.innerHTML=`<div><b>${BOOKS_ES[b]} ${ci+1}:${vv}</b><small>…${frag}…</small></div><button class="go">${btn||"Ir"}</button>`;
+  const go=cb||(()=>{closeSheets();loadChapter(b,ci,vv)});
+  row.onclick=go;row.querySelector(".go").onclick=e=>{e.stopPropagation();go()};
+  searchRes.appendChild(row);
+}
+/* ---- diccionario TOTALMENTE offline: curado + concordancia de todo el corpus ---- */
+Object.assign(DICT,{
+"jehova":{g:"יהוה",t:"YHWH",b:"El nombre propio de Dios revelado a Moisés.",d:"Tetragrámaton, ~6.800 veces en el AT. De la raíz «ser»: «Yo soy el que soy» (Éx 3:14)."},
+"dios":{g:"אֱלֹהִים",t:"Elohim",b:"Dios; plural de majestad.",d:"Strong H430. En el NT: θεός theós (G2316)."},
+"espiritu":{g:"רוּחַ · πνεῦμα",t:"rúaj · pneúma",b:"Viento, aliento, Espíritu.",d:"H7307/G4151. La misma palabra significa viento y espíritu en ambos idiomas."},
+"pacto":{g:"בְּרִית",t:"berít",b:"Alianza solemne entre Dios y su pueblo.",d:"Strong H1285. En el NT: διαθήκη diathḗkē (G1242), también «testamento»."},
+"fe":{g:"πίστις",t:"pístis",b:"Confianza, fidelidad, convicción.",d:"Strong G4102. Raíz de «creer» (pisteúō). Heb 11:1 la define."},
+"amor":{g:"אַהֲבָה · ἀγάπη",t:"ahavá · agápē",b:"Amor; en el NT, amor sacrificial.",d:"H160/G26. El griego distingue agápē (incondicional), philía (amistad), érōs."},
+"pecado":{g:"ἁμαρτία",t:"hamartía",b:"Errar el blanco; fallar la meta.",d:"Strong G266. Heb: jattá't (H2403), con el mismo sentido de «fallar»."},
+"justicia":{g:"צְדָקָה",t:"tsedaqá",b:"Rectitud; lo que está conforme a Dios.",d:"H6666. NT: δικαιοσύνη dikaiosýnē (G1343)."},
+"misericordia":{g:"חֶסֶד",t:"jésed",b:"Amor leal del pacto; bondad fiel.",d:"H2617, ~250 veces. NT: ἔλεος éleos (G1656)."},
+"salvacion":{g:"יְשׁוּעָה",t:"yeshuá",b:"Liberación, rescate, victoria.",d:"H3444. Raíz del nombre Jesús (Yeshúa). NT: σωτηρία sōtería (G4991)."},
+"evangelio":{g:"εὐαγγέλιον",t:"euangélion",b:"Buena noticia; buen anuncio.",d:"Strong G2098. Término imperial romano resignificado por los cristianos."},
+"iglesia":{g:"ἐκκλησία",t:"ekklēsía",b:"Asamblea de convocados.",d:"Strong G1577. De ek (fuera) + kaléō (llamar): los llamados afuera."},
+"arrepentimiento":{g:"μετάνοια",t:"metánoia",b:"Cambio de mente y dirección.",d:"G3341. Heb: shub (H7725), «volverse, regresar»."},
+"gloria":{g:"כָּבוֹד",t:"kabód",b:"Peso, honor, esplendor divino.",d:"H3519. NT: δόξα dóxa (G1391)."},
+"sabiduria":{g:"חָכְמָה",t:"jokmá",b:"Habilidad para vivir según Dios.",d:"H2451. NT: σοφία sophía (G4678)."},
+"verdad":{g:"אֱמֶת",t:"emét",b:"Firmeza, fidelidad, verdad.",d:"H571, raíz de «amén». NT: ἀλήθεια alḗtheia (G225)."},
+"vida":{g:"חַיִּים · ζωή",t:"jayím · zōḗ",b:"Vida; en el NT, la vida divina.",d:"H2416/G2222. El griego distingue zōḗ (vida en sí) de bíos (medios de vida)."},
+"luz":{g:"אוֹר · φῶς",t:"or · phōs",b:"Luz, física y espiritual.",d:"H216/G5457. Primera palabra creadora: «Sea la luz» (Gn 1:3)."},
+"palabra":{g:"דָּבָר · λόγος",t:"dabár · lógos",b:"Palabra, asunto, razón.",d:"H1697/G3056. Juan 1:1 aplica lógos a Cristo."},
+"reino":{g:"מַלְכוּת · βασιλεία",t:"malkút · basileía",b:"Reinado, soberanía de Dios.",d:"H4438/G932. Tema central de la predicación de Jesús."},
+"profeta":{g:"נָבִיא",t:"nabí",b:"Portavoz de Dios.",d:"H5030. NT: προφήτης prophḗtēs (G4396), «el que habla por otro»."},
+"sacerdote":{g:"כֹּהֵן",t:"kohén",b:"Mediador del culto.",d:"H3548. NT: ἱερεύς hiereús (G2409)."},
+"angel":{g:"מַלְאָךְ · ἄγγελος",t:"malák · ángelos",b:"Mensajero.",d:"H4397/G32. La palabra significa simplemente «enviado con un mensaje»."},
+"amen":{g:"אָמֵן",t:"amén",b:"Firme, verdadero; «así sea».",d:"H543. Una de las pocas palabras idénticas en hebreo, griego y español."},
+"aleluya":{g:"הַלְלוּ־יָהּ",t:"halelu-Yah",b:"«¡Alabad a Yah (Jehová)!»",d:"H1984+H3050. En el NT solo aparece en Apocalipsis 19."},
+"sabado":{g:"שַׁבָּת",t:"shabbát",b:"Reposo, cesación.",d:"H7676. De la raíz «cesar»: el día en que Dios cesó de crear."},
+"pascua":{g:"פֶּסַח",t:"pésaj",b:"«Pasar por alto»; la liberación de Egipto.",d:"H6453. NT: πάσχα páscha (G3957)."},
+"mana":{g:"מָן",t:"man",b:"«¿Qué es esto?» — el pan del desierto.",d:"H4478. El nombre nace de la pregunta de Israel (Éx 16:15)."},
+"hosanna":{g:"הוֹשַׁע־נָא",t:"hosha-ná",b:"«¡Salva ahora, te rogamos!»",d:"De Sal 118:25; aclamación del Domingo de Ramos."},
+"apostol":{g:"ἀπόστολος",t:"apóstolos",b:"Enviado con autoridad.",d:"Strong G652. De apostéllō, «enviar en misión»."}});
+let WIDX=null;
+function buildWidx(){
+  WIDX=new Map();
+  for(let b=0;b<66;b++)BIBLE[b].forEach((ch,ci)=>ch.forEach((t,vi)=>{
+    t.split(" ").forEach(w=>{
+      const c=clean(w);if(!c||c.length<2)return;
+      let e=WIDX.get(c);
+      if(!e){e=[0,b,ci,vi+1];WIDX.set(c,e)}
+      e[0]++;
+    });
+  }));
+  console.log("Concordancia offline:",WIDX.size,"palabras únicas");
+}
+const _widxWait=setInterval(()=>{if(BIBLE){clearInterval(_widxWait);buildWidx()}},400);
+function showDict(word,x,y){
+  const c=clean(word);
+  if(OBJ_WORDS[c]){openObjects(OBJ_WORDS[c]);return}
+  if(PLACE_LOOKUP[c]){openPlaceMap(PLACE_LOOKUP[c]);return}
+  if(c==="patmos"){openPlaceMap("Patmos");return}
+  killBubbles();
+  const d=DICT[c],st=WIDX&&WIDX.get(c);
+  let html="";
+  if(d){
+    html='<h4>📕 Diccionario bíblico · offline</h4><span class="greek">'+d.g+'</span> <span class="translit">('+d.t+')</span><br>'+d.b;
+    if(S.dictDeep)html+='<br><small style="color:var(--muted)">'+d.d+'</small>';
+  }else html='<h4>📕 Concordancia · offline</h4><b>'+word+'</b>';
+  if(st){
+    html+='<br><small style="color:var(--muted)">Aparece <b>'+st[0]+'</b> ve'+(st[0]===1?"z":"ces")+' en la Biblia · 1ª vez en <b>'+BOOKS_ES[st[1]]+' '+(st[2]+1)+':'+st[3]+'</b></small>'+
+      '<br><button class="btn ghost" data-seeall style="margin-top:8px;padding:6px 14px;font-size:12px">Ver todas las apariciones →</button>';
+  }else if(!d){
+    html+='<br><span class="translit">'+(WIDX?"Sin coincidencias exactas en el corpus.":"Índice cargando…")+'</span>';
+  }
+  const bb=bubble(html,x,y);
+  const sa=bb.querySelector("[data-seeall]");
+  if(sa)sa.onclick=e=>{e.stopPropagation();killBubbles();openSheet("search");searchInp.value=c;doSearch(c);setTimeout(()=>searchInp.focus(),380)};
+}
+/* ---- menú rápido Aa ---- */
+btnQuick.onclick=()=>{rgFont2.value=S.font;openSheet("quick")};
+qRead.querySelectorAll("button").forEach(b=>b.onclick=()=>{
+  qRead.querySelectorAll("button").forEach(x=>x.classList.toggle("on",x===b));
+  segRead.querySelectorAll("button").forEach(x=>x.classList.toggle("on",x.dataset.r===b.dataset.r));
+  setReadMode(b.dataset.r);
+});
+segRead.querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>{
+  qRead.querySelectorAll("button").forEach(x=>x.classList.toggle("on",x.dataset.r===b.dataset.r));
+}));
+rgFont2.addEventListener("input",e=>{
+  S.font=+e.target.value;rgFont.value=S.font;
+  document.querySelectorAll(".page").forEach(p=>p.style.fontSize=S.font+"px");
+  if(S.rulerOn)placeRulerAtLine(rulerLine);
+});
+rgFont.addEventListener("input",e=>rgFont2.value=e.target.value);
+const FONTS={serif:'"Iowan Old Style",Palatino,Georgia,serif',sans:'-apple-system,"SF Pro Text","Helvetica Neue",sans-serif',georgia:'Georgia,"Times New Roman",serif'};
+segFont.querySelectorAll("button").forEach(b=>b.onclick=()=>{
+  segFont.querySelectorAll("button").forEach(x=>x.classList.toggle("on",x===b));
+  document.body.style.setProperty("--font-body",FONTS[b.dataset.f]);
+  if(S.rulerOn)setTimeout(()=>placeRulerAtLine(rulerLine),60);
+});
+segDark.querySelectorAll("button").forEach(b=>b.onclick=()=>{
+  segDark.querySelectorAll("button").forEach(x=>x.classList.toggle("on",x===b));
+  document.body.dataset.dark=b.dataset.d;
+  toast(b.dataset.d==="1"?"🌙 Modo oscuro":"☀️ Modo claro");
+});
+segVib.querySelectorAll("button").forEach(b=>b.onclick=()=>{
+  segVib.querySelectorAll("button").forEach(x=>x.classList.toggle("on",x===b));
+  S.vib=b.dataset.v==="1";
+  toast(S.vib?(navigator.vibrate?"Vibración activada":"iOS Safari no expone vibración · en la app nativa sí"):"Vibración desactivada");
+});
+</script>
+
+
+<script>
+/* ============ v2.16 · Diccionario offline con lematizador + orden significado→concordancia ============ */
+const DEFS={
+clamar:"Gritar con fuerza pidiendo ayuda; invocar a Dios en voz alta.",
+invocar:"Llamar a Dios por su nombre en oración o súplica.",
+alabar:"Celebrar con palabras la grandeza de Dios.",
+bendecir:"Desear o declarar el bien; consagrar. Dios bendice dando prosperidad y favor.",
+maldecir:"Desear o declarar el mal; lo opuesto a bendecir.",
+adorar:"Rendir honor supremo y reverencia, reservados solo a Dios.",
+orar:"Hablar con Dios: alabanza, gratitud, confesión o petición.",
+rogar:"Pedir con insistencia y humildad.",
+suplicar:"Rogar con fervor, apelando a la misericordia.",
+interceder:"Rogar en favor de otra persona.",
+redimir:"Comprar de vuelta; liberar pagando un precio (heb. gaal).",
+rescatar:"Liberar de peligro, esclavitud o muerte.",
+expiar:"Cubrir o reparar la culpa mediante sacrificio.",
+propiciacion:"Sacrificio que satisface la justicia divina y restaura el favor.",
+perdonar:"Levantar la carga de la ofensa; no imputar el pecado.",
+santificar:"Apartar para Dios; hacer santo.",
+consagrar:"Dedicar por completo al servicio de Dios.",
+justificar:"Declarar justo; absolver delante de Dios.",
+glorificar:"Dar peso y honor; manifestar la gloria.",
+exaltar:"Levantar en alto; engrandecer.",
+humillar:"Abajar; reconocer la propia pequeñez delante de Dios.",
+pecar:"Errar el blanco; desviarse del camino de Dios.",
+transgredir:"Cruzar el límite; violar un mandamiento.",
+iniquidad:"Maldad torcida; perversión deliberada del bien.",
+maldad:"Disposición a hacer el mal.",
+abominacion:"Aquello que provoca repulsión a Dios, especialmente la idolatría.",
+fornicacion:"Inmoralidad sexual; en los profetas, imagen de la infidelidad a Dios.",
+adulterio:"Infidelidad conyugal; figura de la idolatría del pueblo.",
+idolatria:"Culto a imágenes o a cualquier cosa en lugar de Dios.",
+blasfemia:"Hablar con desprecio o injuria contra Dios.",
+holocausto:"Ofrenda quemada por completo sobre el altar.",
+sacrificio:"Ofrenda presentada a Dios, a menudo con muerte de un animal.",
+ofrenda:"Don presentado a Dios: grano, animal o bienes.",
+primicia:"Lo primero y mejor de la cosecha, dedicado a Dios.",
+diezmo:"La décima parte, entregada a Dios.",
+tabernaculo:"Tienda sagrada del desierto donde Dios habitaba con Israel.",
+santuario:"Lugar santo dedicado a la presencia de Dios.",
+propiciatorio:"Cubierta de oro del arca; lugar de la expiación.",
+siervo:"El que sirve; título honroso de quien obedece a Dios.",
+esclavo:"Persona sin libertad; comprada o sometida.",
+heredad:"Porción de tierra o bienes recibida en herencia.",
+herencia:"Lo que se recibe de los padres; Israel es la herencia de Dios.",
+primogenito:"El primer hijo; recibía doble porción y bendición especial.",
+unigenito:"Único engendrado; único en su clase (Juan 3:16).",
+escogido:"Elegido por Dios para un propósito.",
+ungido:"Consagrado con aceite: reyes, sacerdotes y profetas. En hebreo, «Mesías».",
+mesias:"«El Ungido» (heb. mashíaj); en griego, «Cristo».",
+redentor:"El pariente que rescata (heb. goel); título de Dios y de Cristo.",
+salvador:"El que libra del peligro, la esclavitud o el pecado.",
+consolador:"El que alienta y acompaña; título del Espíritu Santo (Juan 14).",
+morar:"Habitar, residir de forma estable.",
+habitar:"Vivir en un lugar.",
+peregrinar:"Vivir como extranjero de paso.",
+congregar:"Reunir en asamblea.",
+esparcir:"Dispersar; sembrar al voleo.",
+desterrar:"Expulsar de la tierra propia.",
+cautividad:"Estado de cautiverio; el exilio de Israel.",
+remanente:"Lo que queda; el resto fiel que Dios preserva.",
+engendrar:"Dar origen a un hijo.",
+concebir:"Quedar encinta; también idear en el corazón.",
+esteril:"Sin capacidad de tener hijos; tierra sin fruto.",
+simiente:"Semilla; descendencia.",
+linaje:"Línea de descendencia familiar.",
+generacion:"Conjunto de los nacidos en una época; descendencia.",
+pastor:"El que cuida ovejas; figura del líder que guía al pueblo.",
+rebaño:"Conjunto de ovejas; figura del pueblo de Dios.",
+cordero:"Cría de la oveja; víctima pascual, figura de Cristo.",
+oveja:"Animal del rebaño; figura del creyente que sigue al pastor.",
+buey:"Bovino de labranza y sacrificio.",
+cabra:"Animal del rebaño; el macho cabrío cargaba el pecado en Yom Kipur.",
+manada:"Grupo de ganado.",
+justo:"Recto, conforme a la voluntad de Dios.",
+impio:"Sin reverencia a Dios; malvado.",
+necio:"El que rechaza la sabiduría y la corrección.",
+prudente:"Que actúa con discernimiento.",
+integro:"Completo, sin doblez; de conducta intachable.",
+recto:"Derecho, sin torcerse del camino.",
+perverso:"Torcido, corrompido.",
+clemente:"Que perdona con facilidad; compasivo.",
+piadoso:"Devoto; que honra a Dios.",
+fiel:"Digno de confianza; que cumple su palabra.",
+temor:"Reverencia profunda; el «temor de Jehová» es principio de la sabiduría.",
+reverencia:"Respeto profundo y honra.",
+gozo:"Alegría honda que no depende de las circunstancias.",
+regocijar:"Alegrarse intensamente; celebrar.",
+lamentar:"Expresar dolor o duelo.",
+gemir:"Quejarse con sonido de dolor.",
+afligir:"Causar o padecer sufrimiento.",
+tribulacion:"Presión, angustia; tiempo de prueba.",
+angustia:"Estrechez, aflicción intensa.",
+consolar:"Aliviar el dolor; animar al afligido.",
+esperanza:"Expectativa confiada del bien prometido.",
+esperar:"Aguardar con confianza.",
+confiar:"Apoyarse con seguridad en alguien.",
+perseverar:"Mantenerse firme hasta el final.",
+paciencia:"Constancia para soportar sin rendirse.",
+juicio:"Acto de juzgar; decisión judicial de Dios.",
+juzgar:"Discernir y decidir sobre lo justo.",
+condenar:"Declarar culpable.",
+venganza:"Retribución por un daño; «mía es la venganza», dice Dios.",
+ley:"Instrucción divina (heb. torá): enseñanza y norma.",
+mandamiento:"Orden expresa de Dios.",
+estatuto:"Norma establecida de forma permanente.",
+precepto:"Instrucción específica de conducta.",
+ordenanza:"Disposición establecida para el culto o la vida.",
+profetizar:"Hablar de parte de Dios.",
+vision:"Revelación recibida en imágenes.",
+ayunar:"Abstenerse de comer para buscar a Dios.",
+ayuno:"Abstinencia de alimento con propósito espiritual.",
+fiesta:"Celebración sagrada establecida.",
+solemnidad:"Fiesta señalada del calendario sagrado.",
+convocacion:"Reunión santa convocada.",
+circuncision:"Señal del pacto en la carne (Génesis 17).",
+gentil:"Persona de las naciones, no judía.",
+escudriñar:"Examinar a fondo, con diligencia.",
+meditar:"Rumiar en el corazón la palabra de Dios.",
+murmurar:"Quejarse por lo bajo; hablar contra alguien.",
+contender:"Disputar, luchar.",
+reprender:"Corregir con autoridad.",
+exhortar:"Animar con firmeza a actuar bien.",
+amonestar:"Advertir para corregir.",
+edificar:"Construir; fortalecer la fe de otros.",
+restaurar:"Devolver al estado original.",
+renovar:"Hacer nuevo otra vez.",
+vanidad:"Vapor, soplo; lo vacío y pasajero (Eclesiastés).",
+soberbia:"Orgullo altivo que se exalta a sí mismo.",
+humildad:"Reconocimiento sincero de la propia condición.",
+mansedumbre:"Fuerza bajo control; suavidad de carácter.",
+templanza:"Dominio propio.",
+carne:"El cuerpo; también la naturaleza humana débil opuesta al Espíritu.",
+alma:"El ser viviente entero; la vida interior (heb. néfesh).",
+corazon:"Centro de la voluntad, la mente y las emociones en la Biblia.",
+entrañas:"Lo más profundo del ser; sede de la compasión.",
+sangre:"Sede de la vida; esencial en los sacrificios de expiación.",
+voto:"Promesa solemne hecha a Dios.",
+juramento:"Afirmación solemne poniendo a Dios por testigo.",
+jurar:"Prometer solemnemente ante Dios.",
+denuedo:"Valentía y firmeza para hablar sin miedo.",
+presto:"Pronto, rápidamente (español antiguo).",
+empero:"Pero, sin embargo (arcaísmo).",
+mas:"Pero (conjunción adversativa, sin tilde).",
+postrero:"Último, final.",
+verguenza:"Deshonra, humillación pública.",
+mocedad:"Juventud (español antiguo).",
+comprimir:"Apretar, oprimir.",
+fornicar:"Cometer inmoralidad sexual."};
+let NDICT={},NDEFS={};
+function rebuildDicts(){
+  NDICT={};Object.entries(DICT).forEach(([k,v])=>NDICT[norm(k)]=v);
+  NDEFS={};Object.entries(DEFS).forEach(([k,v])=>NDEFS[norm(k)]=[k,v]);
+}
+rebuildDicts();
+const SUF=["andose","iendose","aciones","imientos","amiento","imiento","aremos","eremos","iremos","asteis","isteis","ariais","eriais","aran","eran","iran","aria","eria","iria","aron","ieron","aban","abais","aba","ian","ia","ando","iendo","ados","adas","idos","idas","ado","ada","ido","ida","amos","emos","imos","aste","iste","aras","eras","iras","ara","era","ira","ad","ed","id","es","en","an","as","e","a","o"];
+function lemma(n){
+  if(NDICT[n]||NDEFS[n])return n;
+  let cands=[n];
+  if(n.endsWith("ces"))cands.push(n.slice(0,-3)+"z");
+  if(n.endsWith("s")){cands.push(n.slice(0,-1));if(n.endsWith("es"))cands.push(n.slice(0,-2))}
+  for(const w of cands){
+    if(NDICT[w]||NDEFS[w])return w;
+    for(const s of SUF){
+      if(!w.endsWith(s)||w.length-s.length<3)continue;
+      const st=w.slice(0,-s.length);
+      for(const e of ["ar","er","ir",""]){
+        const c=st+e;
+        if(NDICT[c]||NDEFS[c])return c;
+      }
+    }
+  }
+  return null;
+}
+/* orden: 1º significado · 2º concordancia */
+function showDict(word,x,y){
+  const c=clean(word),n=norm(c);
+  if(OBJ_WORDS[c]||OBJ_WORDS[n]){openObjects(OBJ_WORDS[c]||OBJ_WORDS[n]);return}
+  if(PLACE_LOOKUP[c]||PLACE_LOOKUP[n]){openPlaceMap(PLACE_LOOKUP[c]||PLACE_LOOKUP[n]);return}
+  if(n==="patmos"){openPlaceMap("Patmos");return}
+  killBubbles();
+  const lm=lemma(n);
+  const d=lm?NDICT[lm]:null, df=lm&&!d?NDEFS[lm]:null;
+  const arrow=lm&&lm!==n?' <span class="translit">→ '+(df?df[0]:lm)+'</span>':'';
+  let html;
+  if(d){
+    html='<h4>📕 Diccionario bíblico · offline</h4><b>'+word+'</b>'+arrow+
+      '<br><span class="greek">'+d.g+'</span> <span class="translit">('+d.t+')</span><br>'+d.b;
+    if(S.dictDeep)html+='<br><small style="color:var(--muted)">'+d.d+'</small>';
+  }else if(df){
+    html='<h4>📕 Diccionario · offline</h4><b>'+word+'</b>'+arrow+'<br>'+df[1];
+  }else{
+    html='<h4>📕 Diccionario · offline</h4><b>'+word+'</b><br><span class="translit">Significado aún no disponible en el diccionario offline.</span>';
+  }
+  const st=WIDX&&WIDX.get(c);
+  if(st){
+    html+='<div style="border-top:1px solid var(--line);margin-top:9px;padding-top:8px">'+
+      '<small style="color:var(--muted)">📊 <b>Concordancia:</b> aparece <b>'+st[0]+'</b> ve'+(st[0]===1?"z":"ces")+' en la Biblia · 1ª vez en <b>'+BOOKS_ES[st[1]]+' '+(st[2]+1)+':'+st[3]+'</b></small><br>'+
+      '<button class="btn ghost" data-seeall style="margin-top:7px;padding:6px 14px;font-size:12px">Ver todas las apariciones →</button></div>';
+  }
+  const bb=bubble(html,x,y);
+  const sa=bb.querySelector("[data-seeall]");
+  if(sa)sa.onclick=e=>{e.stopPropagation();killBubbles();openSheet("search");searchInp.value=c;doSearch(c)};
+}
+/* subrayado punteado también para palabras con definición (vía lema) */
+function renderPage(el,data){
+  el.innerHTML="";
+  data.forEach(([nv,txt])=>{
+    const v=document.createElement("p");v.className="verse";v.dataset.v=nv;
+    const vn=document.createElement("span");vn.className="vn";vn.textContent=nv;v.appendChild(vn);
+    txt.split(" ").forEach(word=>{
+      const s=document.createElement("span");s.className="w";s.textContent=word;
+      const c=clean(word),n2=norm(c);
+      if(PLACE_LOOKUP[c]||PLACE_LOOKUP[n2]||OBJ_WORDS[c]||OBJ_WORDS[n2]||n2==="patmos")s.classList.add("place");
+      else if(NDICT[n2]||NDEFS[n2])s.classList.add("dict");
+      v.appendChild(s);v.appendChild(document.createTextNode(" "));
+    });
+    el.appendChild(v);
+  });
+}
+renderCurrent();
+</script>
+
+
+<script>
+/* ============ v2.17 · lugares corregidos + diccionario frecuente + irregulares ============ */
+Object.assign(PLACE_ES,{
+ smirna:"Smyrna",jerusalem:"Jerusalem",sion:"Zion",malta:"Malta",cesarea:"Caesarea",
+ filadelfia:"Philadelphia",laodicea:"Laodicea",silo:"Shiloh",hebron:"Hebron",
+ eufrates:"Euphrates",berea:"Berea",aczib:"Achzib 1"});
+if(typeof MAPD!=="undefined"&&MAPD)buildPlaceIndex();
+/* verbos irregulares frecuentes → lema */
+const IRR={hizo:"hacer",hice:"hacer",hicieron:"hacer",hara:"hacer",hare:"hacer",haras:"hacer",hecho:"hacer",haciendo:"hacer",
+dijo:"decir",dijeron:"decir",dije:"decir",dijole:"decir",dira:"decir",dire:"decir",dicho:"decir",diciendo:"decir",digo:"decir",dice:"decir",
+dio:"dar",dieron:"dar",dara:"dar",dare:"dar",dado:"dar",dandole:"dar",
+vio:"ver",vieron:"ver",vera:"ver",visto:"ver",viendo:"ver",ve:"ver",
+fue:"ser",fueron:"ser",fuere:"ser",fuese:"ser",era:"ser",eran:"ser",sido:"ser",siendo:"ser",sera:"ser",seran:"ser",sea:"ser",sean:"ser",
+vinieron:"venir",vendra:"venir",venido:"venir",viniendo:"venir",ven:"venir",
+puso:"poner",pusieron:"poner",pondra:"poner",puesto:"poner",
+supo:"saber",supieron:"saber",sabra:"saber",sabido:"saber",
+quiso:"querer",quisieron:"querer",querra:"querer",
+pudo:"poder",pudieron:"poder",podra:"poder",podido:"poder",
+anduvo:"andar",anduvieron:"andar",
+trajo:"traer",trajeron:"traer",traido:"traer",
+oyo:"oir",oyeron:"oir",oido:"oir",oyendo:"oir",oye:"oir",oid:"oir",
+cayo:"caer",cayeron:"caer",caido:"caer",
+murio:"morir",murieron:"morir",muerto:"morir",muertos:"morir",muerta:"morir",morira:"morir",
+nacio:"nacer",nacieron:"nacer",nacido:"nacer",
+bendijo:"bendecir",bendijeron:"bendecir",bendito:"bendecir",bendita:"bendecir",
+huyo:"huir",huyeron:"huir",durmio:"dormir",durmieron:"dormir",
+sintio:"sentir",pidio:"pedir",pidieron:"pedir",siguio:"seguir",siguieron:"seguir",
+vistio:"vestir",sirvio:"servir",creyo:"creer",creyeron:"creer",leyo:"leer",
+tuvo:"tener",tuvieron:"tener",tendra:"tener",tenido:"tener",
+estuvo:"estar",estuvieron:"estar",
+volvio:"volver",volvieron:"volver",vuelto:"volver",
+salio:"salir",salieron:"salir",saldra:"salir",salido:"salir",
+acontecio:"acontecer",envio:"enviar",enviare:"enviar"};
+/* definiciones del vocabulario más frecuente de la RVA */
+Object.assign(DEFS,{
+tierra:"El suelo; el mundo habitado; también la tierra prometida.",
+hijo:"Descendiente varón; «hijo de» expresa pertenencia o carácter.",
+rey:"Soberano que gobierna un reino.",
+casa:"Vivienda; también familia o dinastía («casa de David»).",
+pueblo:"Conjunto de personas; la nación de Israel.",
+delante:"Enfrente, en presencia de.",
+dia:"Jornada; «el día de Jehová» es el tiempo de su intervención.",
+mano:"Símbolo de poder y acción; «mano de Dios» = su poder.",
+hombre:"Ser humano; varón.",
+padre:"Progenitor; antepasado; título de Dios.",
+madre:"Progenitora.",
+ciudad:"Población amurallada.",
+ojo:"Órgano de la vista; «ojos de Jehová» = su mirada atenta.",
+lugar:"Sitio, espacio determinado.",
+mujer:"Persona de sexo femenino; esposa.",
+vino:"Bebida fermentada de la uva (también pasado del verbo venir).",
+camino:"Senda; figura de la conducta y estilo de vida.",
+tiempo:"Duración; época señalada.",
+hermano:"Hijo de los mismos padres; también compatriota o prójimo.",
+año:"Período de doce meses.",
+oro:"Metal precioso; símbolo de lo más valioso.",
+plata:"Metal precioso usado como dinero.",
+voz:"Sonido del habla; «voz de Jehová» = su palabra audible.",
+fuego:"Elemento que consume; símbolo de la presencia y el juicio de Dios.",
+obra:"Trabajo, acción realizada.",
+campo:"Terreno de cultivo o abierto.",
+mal:"Lo dañino o moralmente malo.",
+malo:"Que hace o contiene mal.",
+monte:"Elevación del terreno; los montes son escenario de encuentros con Dios.",
+causa:"Motivo, razón; también pleito.",
+puerta:"Entrada; en las ciudades antiguas, lugar de juicio y comercio.",
+mar:"Gran masa de agua; para Israel, símbolo de caos.",
+boca:"Órgano del habla; «la boca de Jehová» = su palabra.",
+agua:"Elemento vital; figura de limpieza y del Espíritu.",
+varon:"Hombre adulto.",
+cielo:"Firmamento; morada de Dios.",
+altar:"Estructura para presentar sacrificios.",
+pan:"Alimento básico; «pan de vida» aplicado a Cristo.",
+desierto:"Región árida; lugar de prueba y encuentro con Dios.",
+ira:"Enojo intenso; la ira de Dios es su justicia contra el mal.",
+furor:"Ira ardiente.",
+ejercito:"Conjunto de tropas; «Jehová de los ejércitos» = Señor de las huestes.",
+muerte:"Fin de la vida; el «último enemigo» vencido por Cristo.",
+noche:"Tiempo de oscuridad.",
+hija:"Descendiente mujer.",
+santo:"Apartado para Dios; puro.",
+rostro:"Cara; «el rostro de Dios» = su presencia y favor.",
+enemigo:"El que se opone o hace la guerra.",
+faraon:"Título del rey de Egipto.",
+pie:"Extremidad; «estar a los pies» = someterse o aprender.",
+levita:"Miembro de la tribu de Leví, dedicada al servicio del santuario.",
+guerra:"Conflicto armado.",
+mandar:"Ordenar con autoridad.",
+mes:"Período lunar del calendario hebreo.",
+tribu:"Cada una de las doce familias de Israel.",
+discipulo:"Aprendiz que sigue a un maestro.",
+gente:"Conjunto de personas; en plural, las naciones.",
+mundo:"La tierra habitada; el orden humano alejado de Dios.",
+filisteo:"Pueblo costero, adversario de Israel.",
+vez:"Ocasión.",
+fortaleza:"Fuerza; refugio fortificado — título de Dios.",
+espada:"Arma de hoja; símbolo de guerra y juicio.",
+alrededor:"En torno a.",
+familia:"Grupo de parentesco.",
+codo:"Medida antigua (~45 cm), del codo a la punta de los dedos.",
+fruto:"Producto de la planta; resultado de la vida y las obras.",
+piedra:"Roca; Cristo es la «piedra angular».",
+cuchillo:"Instrumento de corte usado en sacrificios y ritos.",
+congregacion:"Asamblea reunida del pueblo de Dios.",
+libro:"Rollo o escrito.",
+aceite:"Óleo de oliva: alimento, medicina y unción.",
+vestido:"Ropa, vestidura.",
+anciano:"Persona mayor; líder con autoridad en la comunidad.",
+principe:"Gobernante, jefe.",
+cuerpo:"Organismo físico; figura de la iglesia.",
+sol:"Astro del día.",
+morador:"Habitante.",
+salud:"En la RVA significa «salvación», no solo bienestar físico.",
+comer:"Alimentarse.",
+vaso:"Recipiente; figura de la persona como instrumento.",
+fin:"Término, meta.",
+sino:"Excepto; más bien.",
+grande:"De gran tamaño o importancia.",
+fuerte:"Con fuerza; poderoso.",
+multitud:"Gran cantidad de personas.",
+nombre:"Designación; en la Biblia expresa el carácter y la autoridad.",
+cosa:"Objeto o asunto.",
+cabeza:"Parte superior del cuerpo; autoridad.",
+medio:"Centro; mitad.",
+tomar:"Agarrar, recibir.",
+hablar:"Comunicar con palabras.",
+responder:"Contestar.",
+enviar:"Hacer ir a alguien o algo a un destino.",
+llamar:"Convocar por el nombre; dar nombre.",
+venir:"Moverse hacia aquí.",
+salir:"Ir de dentro hacia fuera.",
+volver:"Regresar; en sentido espiritual, arrepentirse.",
+subir:"Ir hacia arriba; «subir a Jerusalén».",
+descender:"Bajar.",
+entrar:"Pasar adentro.",
+pasar:"Atravesar; suceder.",
+llegar:"Alcanzar un lugar.",
+andar:"Caminar; figura de la conducta («andar con Dios»).",
+buscar:"Procurar encontrar; «buscad a Jehová».",
+hallar:"Encontrar.",
+ver:"Percibir con los ojos; comprender.",
+oir:"Percibir sonidos; obedecer («oír la voz de Jehová»).",
+saber:"Conocer.",
+conocer:"Saber por experiencia; en hebreo implica intimidad.",
+creer:"Confiar, tener fe.",
+querer:"Desear, amar.",
+poder:"Ser capaz; capacidad o autoridad.",
+tener:"Poseer.",
+poner:"Colocar.",
+dar:"Entregar.",
+hacer:"Realizar, crear.",
+decir:"Expresar con palabras.",
+tomo:"Pasado de tomar.",
+dejar:"Soltar; abandonar; permitir.",
+guardar:"Custodiar; obedecer («guardar los mandamientos»).",
+cumplir:"Llevar a término lo prometido.",
+vivir:"Tener vida.",
+morir:"Perder la vida.",
+nacer:"Venir a la vida.",
+matar:"Quitar la vida.",
+herir:"Golpear, dañar.",
+caer:"Ir hacia abajo; fracasar moralmente.",
+levantar:"Alzar; poner en pie; suscitar.",
+traer:"Hacer venir consigo.",
+llevar:"Transportar de aquí hacia allá.",
+seguir:"Ir detrás; ser discípulo.",
+servir:"Trabajar para otro; rendir culto.",
+reinar:"Gobernar como rey.",
+juntar:"Reunir.",
+tomad:"Imperativo de tomar.",
+temer:"Sentir temor; reverenciar a Dios.",
+aborrecer:"Odiar, detestar.",
+destruir:"Deshacer por completo.",
+quemar:"Consumir con fuego.",
+derramar:"Verter un líquido; «derramar el Espíritu».",
+ofrecer:"Presentar como ofrenda.",
+acontecer:"Suceder, ocurrir.",
+mirar:"Dirigir la vista; considerar.",
+escuchar:"Prestar oído.",
+callar:"Guardar silencio.",
+contar:"Numerar; narrar.",
+escribir:"Poner por escrito.",
+leer:"Interpretar lo escrito.",
+comprar:"Adquirir por precio.",
+vender:"Dar por precio.",
+pagar:"Dar lo debido.",
+deber:"Estar obligado.",
+pelear:"Combatir.",
+vencer:"Ganar, superar.",
+huir:"Escapar.",
+perseguir:"Ir tras alguien para alcanzarlo o dañarlo.",
+esconder:"Ocultar.",
+cubrir:"Tapar; el perdón «cubre» el pecado.",
+revelar:"Descubrir lo oculto.",
+sanar:"Devolver la salud.",
+limpiar:"Quitar la impureza.",
+lavar:"Limpiar con agua; figura del perdón.",
+ungir:"Derramar aceite consagrando.",
+sellar:"Marcar con sello de propiedad o autenticidad.",
+atar:"Sujetar con ligaduras.",
+desatar:"Soltar lo atado.",
+abrir:"Descubrir la entrada.",
+cerrar:"Impedir la entrada.",
+sembrar:"Poner semilla en tierra.",
+segar:"Cosechar; figura del juicio final.",
+plantar:"Fijar una planta en tierra.",
+arrancar:"Sacar de raíz.",
+sacar:"Extraer; Dios «sacó» a Israel de Egipto.",
+librar:"Rescatar del peligro.",
+salvar:"Librar de la muerte o del pecado.",
+perder:"Dejar de tener; arruinarse.",
+perecer:"Morir, ser destruido.",
+quedar:"Permanecer.",
+permanecer:"Mantenerse estable.",
+descansar:"Reposar.",
+reposo:"Descanso; el reposo de Dios.",
+trabajar:"Laborar.",
+comida:"Alimento.",
+beber:"Tomar líquido.",
+hambre:"Necesidad de comer; escasez.",
+sed:"Necesidad de beber; anhelo del alma.",
+sueño:"Descanso de dormir; también visión nocturna.",
+camello:"Animal de carga del desierto.",
+asno:"Burro; montura humilde.",
+caballo:"Animal de guerra.",
+leon:"Fiera poderosa; figura de peligro y también de Cristo.",
+serpiente:"Reptil; figura del engañador desde el Edén.",
+paloma:"Ave mansa; símbolo del Espíritu.",
+aguila:"Ave majestuosa; figura de renovación de fuerzas.",
+arbol:"Planta de tronco; «árbol de la vida».",
+viña:"Plantación de vides; figura de Israel.",
+trigo:"Cereal del pan.",
+semilla:"Grano que se siembra.",
+raiz:"Parte enterrada de la planta; origen.",
+rama:"Brazo del árbol.",
+flor:"Brote efímero; figura de la brevedad humana.",
+hierba:"Vegetación tierna y pasajera.",
+sombra:"Zona sin sol; protección («sombra de sus alas»).",
+viento:"Aire en movimiento; misma palabra que espíritu.",
+nube:"Masa de vapor; señal de la presencia divina.",
+lluvia:"Agua del cielo; bendición sobre la tierra.",
+trueno:"Estruendo de la tormenta; voz de poder.",
+relampago:"Destello de la tormenta.",
+estrella:"Astro nocturno.",
+luna:"Astro de la noche; marca los tiempos.",
+polvo:"Tierra fina; materia del hombre («polvo eres»).",
+ceniza:"Residuo del fuego; señal de duelo.",
+sal:"Condimento y conservante; «sal de la tierra».",
+miel:"Dulzura de la tierra prometida.",
+leche:"Alimento; «tierra que fluye leche y miel».",
+perfume:"Aroma agradable; figura de la oración.",
+corona:"Aro de honor real o de victoria.",
+trono:"Asiento del rey; soberanía.",
+cetro:"Vara de mando real.",
+manto:"Vestidura exterior.",
+tunica:"Vestidura interior.",
+sandalia:"Calzado.",
+bolsa:"Saco para dinero.",
+talento:"Medida grande de peso y dinero.",
+siclo:"Moneda y peso hebreo (~11 g).",
+red:"Malla de pesca; figura de trampa.",
+ancla:"Hierro que fija la nave; figura de la esperanza.",
+antorcha:"Fuego portátil para alumbrar.",
+horno:"Lugar de fuego intenso; figura de prueba.",
+yugo:"Madero que une bueyes; figura de servidumbre o discipulado.",
+arado:"Instrumento de labranza.",
+hoz:"Herramienta de siega; figura del juicio.",
+martillo:"Herramienta de golpe.",
+balanza:"Instrumento de pesar; figura de justicia.",
+medida:"Cantidad establecida.",
+numero:"Cantidad contada.",
+mitad:"Una de dos partes iguales.",
+resto:"Lo que queda.",
+señal:"Marca o prodigio que indica algo.",
+maravilla:"Hecho asombroso.",
+milagro:"Obra de poder divino.",
+misterio:"Verdad oculta que Dios revela.",
+parabola:"Comparación narrativa para enseñar.",
+proverbio:"Dicho breve de sabiduría.",
+salmo:"Canto sagrado.",
+cantico:"Canción de alabanza.",
+arpa:"Instrumento de cuerdas.",
+memoria:"Recuerdo.",
+olvido:"Falta de memoria.",
+consejo:"Deliberación; recomendación.",
+secreto:"Lo reservado u oculto.",
+mensaje:"Comunicación enviada.",
+mensajero:"El que lleva un mensaje.",
+embajador:"Enviado que representa a otro.",
+testigo:"El que da testimonio de lo visto.",
+juez:"El que administra justicia.",
+gobernador:"El que gobierna una provincia.",
+capitan:"Jefe militar.",
+soldado:"Hombre de guerra.",
+cautivo:"Prisionero llevado lejos.",
+extranjero:"El de otra tierra; la ley manda amarlo.",
+projimo:"El cercano; todo aquel a quien puedo amar.",
+huerfano:"Niño sin padres; protegido especial de Dios.",
+viuda:"Mujer que perdió a su esposo; protegida de Dios.",
+pobre:"El que carece; cercano al corazón de Dios.",
+rico:"El que abunda en bienes.",
+riqueza:"Abundancia de bienes.",
+tesoro:"Riqueza guardada; «tesoros en el cielo».",
+deuda:"Lo que se debe; figura del pecado.",
+salario:"Pago por el trabajo.",
+premio:"Recompensa.",
+galardon:"Recompensa (voz antigua).",
+castigo:"Pena por una falta.",
+azote:"Golpe de látigo; plaga.",
+plaga:"Calamidad enviada como juicio.",
+pestilencia:"Epidemia mortal.",
+lepra:"Enfermedad de la piel que excluía de la comunidad.",
+ciego:"Sin vista.",
+sordo:"Sin oído.",
+cojo:"Con dificultad para andar.",
+mudo:"Sin habla.",
+demonio:"Espíritu maligno.",
+diablo:"«El calumniador»; el adversario.",
+satanas:"«El adversario» (heb. satán).",
+infierno:"En la RVA traduce Seol/Hades: la morada de los muertos.",
+sepulcro:"Tumba.",
+abismo:"Profundidad sin fondo.",
+eternidad:"Duración sin fin.",
+eterno:"Sin principio ni fin; perdurable.",
+siglo:"Edad, era; «por los siglos» = para siempre.",
+principio:"Comienzo; origen.",
+crear:"Hacer de la nada (heb. bará, acción exclusiva de Dios).",
+imagen:"Representación; el hombre es imagen de Dios.",
+semejanza:"Parecido.",
+bautismo:"Inmersión en agua como señal de purificación y nueva vida.",
+bautizar:"Sumergir en agua.",
+resurreccion:"Volver a la vida de entre los muertos.",
+resucitar:"Levantarse de la muerte.",
+ascension:"Subida de Cristo al cielo.",
+venida:"Llegada; la «segunda venida» de Cristo.",
+oracion:"Comunicación con Dios.",
+ayudar:"Prestar auxilio.",
+socorro:"Auxilio en la necesidad.",
+refugio:"Lugar de protección.",
+roca:"Peña firme; título de Dios.",
+escudo:"Defensa del guerrero; figura de la protección divina.",
+torre:"Construcción alta de defensa.",
+muro:"Pared de protección de la ciudad.",
+fundamento:"Base sobre la que se construye.",
+columna:"Soporte vertical.",
+tienda:"Vivienda portátil de tela.",
+campamento:"Asentamiento temporal.",
+frontera:"Límite del territorio.",
+valle:"Terreno bajo entre montes.",
+collado:"Colina, cerro.",
+llanura:"Terreno plano.",
+rio:"Corriente de agua.",
+arroyo:"Corriente pequeña.",
+fuente:"Manantial; origen del agua viva.",
+pozo:"Excavación para sacar agua.",
+cisterna:"Depósito de agua de lluvia.",
+puerto:"Abrigo para las naves.",
+nave:"Embarcación.",
+isla:"Tierra rodeada de mar.",
+oriente:"Este, donde sale el sol.",
+occidente:"Oeste, donde se pone el sol.",
+norte:"Punto cardinal septentrional.",
+sur:"Punto cardinal meridional (en la RVA, «mediodía»).",
+mediodia:"El sur; también las 12 del día."});
+rebuildDicts();
+/* lema con irregulares primero */
+const _lemma=lemma;
+lemma=function(n){if(IRR[n]){const l=norm(IRR[n]);if(NDICT[l]||NDEFS[l])return l;return null}return _lemma(n)};
+renderCurrent();
 </script>
 
 </body>
